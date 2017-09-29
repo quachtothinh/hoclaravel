@@ -117,3 +117,70 @@ Route::get('blade', function () {
 Route::get('BladeTemplate/{str}', 'MyController@blade');
 
 Route::get('dieukien/{str}', 'MyController@dieukien');
+
+//Database
+Route::get('database', function () {
+
+	/*Schema::create('loaisanpham', function($table) {
+		//increments la gia tri tu tao
+		$table->increments('id');
+		//tao cot ten co do dai la 200
+		$table->string('ten',200);
+	});*/
+	Schema::create('theloai', function($table) {
+		$table->increments('id');
+		//nullable la cho phep gia tri rong
+		$table->string('ten',200)->nullable();
+		//default la gia tri mac dinh khi tao cot 
+		$table->string('nsx')->default('Nha san xuat');
+	});
+	echo "Tao bang thanh cong";
+});
+
+Route::get('lienketbang', function(){
+	Schema::create('sanpham', function($table) {
+		$table->increments('id');
+		$table->string('ten');
+		$table->float('gia');
+		$table->integer('soluong')->default(0);
+		$table->integer('id_loaisanpham')->unsigned();
+		$table->foreign('id_loaisanpham')->references('id')->on('loaisanpham');
+	});
+	echo "da tao bang san pham";
+});
+
+Route::get('suabang', function() {
+	//De lam viec voi table nhu sua hay them thi dung schema:table
+	Schema::table('theloai', function($table){
+		//xoa cot thi dung dropColumn
+		$table->dropColumn('nsx');
+	});
+});
+
+Route::get('themcot', function() {
+	Schema::table('theloai', function($table) {
+		$table->string('Email');
+	});
+	echo "da them cot email thanh cong";
+});
+
+Route::get('doiten', function() {
+	Schema::rename('theloai', 'nguoidung');
+	echo "Doi ten bang thanh cong";
+});
+
+Route::get('xoabang', function() {
+	//Xoa bang neu ko co bang se bao loi
+	//Schema::drop('nguoidung');
+	//
+	//Xoa bang neu bang ton tai con ko thi ko bao loi
+	Schema::dropIfExists('nguoidung');
+	echo 'xoa bang thanh cong';
+});
+
+Route::get('taobangnguoidung', function (){
+	Schema::create('nguoidung', function ($table) {
+		$table->increments('id');
+		$table->string('email');
+	});
+});
